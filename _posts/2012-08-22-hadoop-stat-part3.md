@@ -19,5 +19,13 @@ published: true
 
 如图所示，mapper做的事情就是先把日志解析一次，提取每条日志中的设备ID，然后以设备ID为KEY来输出数据。map的过程很简单，接下来是reduce过程的示意图：  
 ![组织session的reducer工作流1](/assets/organize_session_reducer_workflow1.png)  
-上图主要是展示Hadoop shuffle的效果，而且值得一说的是，并非所有经过shuffle之后的reduce输入数据文件都只有一个设备ID作为KEY，只是图上只展示一个设备ID而已，只要两个设备ID经过partition算法后（默认使用全键HASH）得出相同的值，就会落到同一个reduce输入数据文件中，并且按设备ID排序好。
+上图主要是展示Hadoop shuffle的效果，而且值得一说的是，并非所有经过shuffle之后的reduce输入数据文件都只有一个设备ID作为KEY，只是图上只展示一个设备ID而已，只要两个设备ID经过partition算法后（默认使用全键HASH）得出相同的值，就会落到同一个reduce输入数据文件中，并且按设备ID排序好。下面是reduce过程的简述：  
+![组织session的reducer工作流2](/assets/organize_session_reducer_workflow2.png)  
+  
+图中有几个点值得一提：  
+1.  reducer采用分组的方式来进行数据处理，在设计reduce过程的时候千万不能想着先把所有输入数据都缓存下来，然后进行处理，因为根本无法预知会有多大的输入数据。在刚开始的时候我就是很单纯地把所有设备ID对应的数据都接受了，然后再处理，而当时完全没有问题，因为一天的数据量根本不大，一旦变成多天输入，那就很可能会压垮内存；合理的做法是分组来进行处理，因为Hadoop已经给输入数据按照key来排序好，如果当前输入的key跟上一次输入的key不一样，那就意味着一个分组的输入已经结束了。那会不会存在分组处理跟集中处理结果不一样的情况呢？按我的理解这是非常罕见的情况，因为本来从map到reduce经过的shuffle过程就无法保证不同的key会落到同一个reducer的输入数据中（这完全又partition算法来决定，虽然你可以配置一个自定义的partition算法）。正常情况下属于同一个reducer输入数据的各组key之间应该是没有什么关系的，哪怕有，也只是优化性能上的关系。  
+2.  对日期进行了划分存储，因为在统计时几乎都是按天来结算，因此就算是同一个设备，不同日期的日志集合不能算是一个session，必须要是同一天内的。  
+3.  扩展点。注意到在组织好session之后，会把每一个session（其实就是排序好的日志记录集合）交给processor进行处理，所以processor就是这里的扩展点，目前最重要的就是生成分类元数据的processor了。  
+
+
 
