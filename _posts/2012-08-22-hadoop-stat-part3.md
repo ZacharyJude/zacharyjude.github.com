@@ -17,4 +17,7 @@ published: true
 下面是组织session的mapper非常简单的工作流程：  
 ![组织session的mapper工作流](/assets/organize_session_mapper_workflow.png)    
 
+如图所示，mapper做的事情就是先把日志解析一次，提取每条日志中的设备ID，然后以设备ID为KEY来输出数据。map的过程很简单，接下来是reduce过程的示意图：  
+![组织session的reducer工作流1](/assets/organize_session_reducer_workflow1.png)  
+上图主要是展示Hadoop shuffle的效果，而且值得一说的是，并非所有经过shuffle之后的reduce输入数据文件都只有一个设备ID作为KEY，只是图上只展示一个设备ID而已，只要两个设备ID经过partition算法后（默认使用全键HASH）得出相同的值，就会落到同一个reduce输入数据文件中，并且按设备ID排序好。
 
