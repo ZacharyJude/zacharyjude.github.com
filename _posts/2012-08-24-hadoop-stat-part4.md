@@ -29,4 +29,36 @@ ClassifySessionDataProcessor包含两个map（我称他做统计表），这个m
 1.  逻辑上功能和目标不一样，可能一个表是为了统计一类功能，而另一个表则为是另一统计功能。强行放在一齐是不好的设计。尤其是这种结构还可以用到其他processor上。  
 2.  针对不同的统计项可能使用类型不一样的counter，因为统计表就是一个STL里面的map，当采用不一样的counter时，自然就不能兼容到同一个map类型里面。当然，如果不同的counter继承一个公用的接口就能解决这个问题，但OOP的问题之一就体现在这里，是不是为了解决这么一个问题就引用需要维护的继承，难道counter的设计初衷就是为了被统计表使用吗？显然不是，甚至说counter之间其实没什么必要有关联，但为了解决这个问题可能就得让他们都继承于同一个接口；当然这时候坚持OOP的话还是可以用适配器模式来来保证counter的设计没有问题，只是适配器类都继承相同的接口，这或许是个好的设计，但我还是觉得没必要用那么复杂的设计。当然使用模板也不意味着counter设计之间可以完全没有关系，但这种关系就是他们要有同样的函数（在具体里面是一个签名完全一样的FeedElement函数），但如果没有实现这个函数的话，在编译的时候就会报上错误。  
 3.  不同的统计表可以关联相同的统计项，虽然在目前我还没碰到这种情况，但保持设计的灵活也是必须的。可能读者也会觉得就算用一个表也可以做到这一点，因为一个统计项名称可以对应一个counter列表，但这样会违背一个原则，就是保持设计简单，这样的话统计表的结构会变得要复杂一点，但其实这种复杂完全可以分担在外部，在做很多组件设计的时候我都会考虑到这一点，让组件设计保持简单，设计更多组件各自分担一点复杂度。
+  
+接下来要说明的就是两个基础的组件，也是第一幅示意图里面的ClassifyCounter和BasicCounter。如果是写上模板参数也不会很长的组件，我就直接用代码形式来写模版信息了，但如果写出来比较长的话，我就用示意图来表示，当然这跟我个人喜欢作图有关系，呵呵。  
+BasicCounter<TElement>是一个用于计数的组件，他目前支持这几种计数：  
+1.  总计数  
+2.  去重计数  
+3.  出现次数计数  
+  
+BasicCounter的主要接口就是一个FeedElement函数，下面是他的实现，这个接口就是用于统计给定元素：  
+     void FeedElement(const TElement& elem) {
+
+	this->_feedElementTimes++;
+
+	if(this->_isEnableUniqCount) {
+	    this->_uniqOccur.insert(elem);
+	}
+
+	if(this->_isEnableOrderedCount) {
+	    this->_orderedOccur.push_back(elem);
+	}
+	
+	if(this->_isEnableOccurCount) {
+	    typename map< TElement, TStatInt >::iterator findIter;
+	    findIter = this->_countOccur.find(elem);
+	    if(this->_countOccur.end() == findIter) {
+		this->_countOccur[elem] = 1;
+	    }
+	    else {
+		(findIter->second)++;
+	    }
+	}
+	return;
+    }  
 
