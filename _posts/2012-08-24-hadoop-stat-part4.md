@@ -37,7 +37,7 @@ BasicCounter`<`TElement`>`是一个用于计数的组件，他目前支持这几
 3.  出现次数计数
   
 BasicCounter的主要接口就是一个FeedElement函数，下面是他的实现，这个接口就是用于统计给定元素：  
-    
+    BasicCounter的FeedElement代码
     void FeedElement(const TElement& elem) {  
 	
 	this->_feedElementTimes++;
