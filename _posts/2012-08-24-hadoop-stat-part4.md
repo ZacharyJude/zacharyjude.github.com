@@ -40,17 +40,13 @@ BasicCounter的主要接口就是一个FeedElement函数，下面是他的实现
 
     BasicCounter的FeedElement代码  
     void FeedElement(const TElement& elem) {  
-	   
 	this->_feedElementTimes++;  
-	   
 	if(this->_isEnableUniqCount) {  
 	    this->_uniqOccur.insert(elem);  
 	}  
-	  
 	if(this->_isEnableOrderedCount) {  
 	    this->_orderedOccur.push_back(elem);  
 	}  
-	  
 	if(this->_isEnableOccurCount) {  
 	    typename map< TElement, TStatInt >::iterator findIter;  
 	    findIter = this->_countOccur.find(elem);  
