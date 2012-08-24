@@ -40,24 +40,24 @@ BasicCounter的主要接口就是一个FeedElement函数，下面是他的实现
 
     BasicCounter的FeedElement代码  
     void FeedElement(const TElement& elem) {  
-	this->_feedElementTimes++;  
-	if(this->_isEnableUniqCount) {  
-	    this->_uniqOccur.insert(elem);  
-	}  
-	if(this->_isEnableOrderedCount) {  
-	    this->_orderedOccur.push_back(elem);  
-	}  
-	if(this->_isEnableOccurCount) {  
-	    typename map< TElement, TStatInt >::iterator findIter;  
-	    findIter = this->_countOccur.find(elem);  
-	    if(this->_countOccur.end() == findIter) {  
-		this->_countOccur[elem] = 1;  
+	    this->_feedElementTimes++;  
+	    if(this->_isEnableUniqCount) {  
+		this->_uniqOccur.insert(elem);  
 	    }  
-	    else {  
-		(findIter->second)++;  
+	    if(this->_isEnableOrderedCount) {  
+		this->_orderedOccur.push_back(elem);  
 	    }  
-	}  
-	return;  
+	    if(this->_isEnableOccurCount) {  
+		typename map< TElement, TStatInt >::iterator findIter;  
+		findIter = this->_countOccur.find(elem);  
+		if(this->_countOccur.end() == findIter) {  
+		    this->_countOccur[elem] = 1;  
+		}  
+		else {  
+		    (findIter->second)++;  
+		}  
+	    }  
+	    return;  
     }  
 
 通过模板，BasicCounter可以用于计数不同的类型，因为内部使用STL来维护这些要计数的类型，因此模板类型也必须要能够用于STL中。在构造BasicCounter的时候需要指定要计算那些类型的计数，默认是全部都会计算，但一般是不需要的。  
