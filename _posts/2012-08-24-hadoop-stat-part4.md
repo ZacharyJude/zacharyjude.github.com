@@ -79,11 +79,11 @@ ClassifyCounter`<`TElement, TBaseCounter`>`是用于分类统计的基础组件�
 	for(TSetS::const_iterator iterClassify=this->_bufferForHoldClassify.begin();
 	    iterClassify!=this->_bufferForHoldClassify.end();
 	    ++iterClassify) {
-	    TClassifyMapperIter findIter = this->_mapper.find(*iterClassify);
+	    TClassifyMapperIter findIter = this->_mapper.find(\*iterClassify);
 	    if(this->_mapper.end() == findIter) {
 		BaseCounterPtr newCounter = this->_baseCounterCreator();
 		newCounter->FeedElement(element);
-		this->_mapper[*iterClassify] = newCounter;
+		this->_mapper[\*iterClassify] = newCounter;
 	    }
 	    else {
 		findIter->second->FeedElement(element);
