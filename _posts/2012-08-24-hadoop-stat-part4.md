@@ -23,4 +23,5 @@ ClassifySessionDataProcessor是生成分类元数据的组件，也是最基础�
 ![组织session reducer的组件图2](/assets/component_session_reducer2.png)   
   
 ClassifySessionDataProcessor包含两个map（我称他做统计表），这个map的key是统计项名称，一个字符串，而对应的value就是一个counter组件，这个组件就负责针对这个统计项的统计。当这个processor处理session中每一条日志记录的时候，会获取每条日志记录参与的统计项名称集合，然后从统计表中检索每个统计项是不是要统计，如果要统计的话就取出对应的counter并进行统计调用，如下图所示：  
+![统计项与日志记录的关系](/assets/stat_entry_log_record_relation.png)  
 
