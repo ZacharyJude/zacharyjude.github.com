@@ -31,21 +31,21 @@ ClassifySessionDataProcessor包含两个map（我称他做统计表），这个m
 3.  不同的统计表可以关联相同的统计项，虽然在目前我还没碰到这种情况，但保持设计的灵活也是必须的。可能读者也会觉得就算用一个表也可以做到这一点，因为一个统计项名称可以对应一个counter列表，但这样会违背一个原则，就是保持设计简单，这样的话统计表的结构会变得要复杂一点，但其实这种复杂完全可以分担在外部，在做很多组件设计的时候我都会考虑到这一点，让组件设计保持简单，设计更多组件各自分担一点复杂度。
   
 接下来要说明的就是两个基础的组件，也是第一幅示意图里面的ClassifyCounter和BasicCounter。如果是写上模板参数也不会很长的组件，我就直接用代码形式来写模版信息了，但如果写出来比较长的话，我就用示意图来表示，当然这跟我个人喜欢作图有关系，呵呵。  
-BasicCounter\<TElement\>是一个用于计数的组件，他目前支持这几种计数：  
+BasicCounter`<`TElement`>`是一个用于计数的组件，他目前支持这几种计数：  
 1.  总计数  
 2.  去重计数  
 3.  出现次数计数  
   
 BasicCounter的主要接口就是一个FeedElement函数，下面是他的实现，这个接口就是用于统计给定元素：  
-     
+  
     void FeedElement(const TElement& elem) {
-
-	this->_feedElementTimes++;
-
+    
+	this->_feedElementTimes++;  
+	
 	if(this->_isEnableUniqCount) {
 	    this->_uniqOccur.insert(elem);
 	}
-
+	
 	if(this->_isEnableOrderedCount) {
 	    this->_orderedOccur.push_back(elem);
 	}
@@ -61,5 +61,5 @@ BasicCounter的主要接口就是一个FeedElement函数，下面是他的实现
 	    }
 	}
 	return;
-    }  
+    }
 
