@@ -68,28 +68,29 @@ ClassifyCounter`<`TElement, TBaseCounter`>`是用于分类统计的基础组件�
 ![ClassifyCounter工作原理](/assets/classify_counter_work.png)  
   
 如图所示，每个ClassifyCounter在构造的时候需要配置三个组件：分类器、属性获取器和子Counter构造器。这三个组件都是由外部定制的，因此ClassifyCounter的本质就是固化和高度抽象了一个分类统计的行为。注意这里我没有让TBaseCounter直接就是BasicCounter，因为这不是唯一绑定的关系，TBaseCounter甚至也可以是ClassifyCounter。下面是ClassifyCounter的关键代码：  
+
     ClassifyCounter的FeedElement代码  
     void FeedElement(const TElement& classifyTarget) {  
 	this->_bufferForHoldClassify.clear();  
-	bool canClassify = this->_classifier(classifyTarget, this->_bufferForHoldClassify);
-	if(!canClassify) {
-	    return;
-	}
-	BaseElementType element = this->_elementGetter(classifyTarget);
-	for(TSetS::const_iterator iterClassify=this->_bufferForHoldClassify.begin();
-	    iterClassify!=this->_bufferForHoldClassify.end();
-	    ++iterClassify) {
-	    TClassifyMapperIter findIter = this->_mapper.find(\*iterClassify);
-	    if(this->_mapper.end() == findIter) {
-		BaseCounterPtr newCounter = this->_baseCounterCreator();
-		newCounter->FeedElement(element);
-		this->_mapper[\*iterClassify] = newCounter;
-	    }
-	    else {
-		findIter->second->FeedElement(element);
-	    }
-	}
-    }
+	bool canClassify = this->_classifier(classifyTarget, this->_bufferForHoldClassify);  
+	if(!canClassify) {  
+	    return;  
+	}  
+	BaseElementType element = this->_elementGetter(classifyTarget);  
+	for(TSetS::const_iterator iterClassify=this->_bufferForHoldClassify.begin();  
+	    iterClassify!=this->_bufferForHoldClassify.end();  
+	    ++iterClassify) {  
+	    TClassifyMapperIter findIter = this->_mapper.find(\*iterClassify);  
+	    if(this->_mapper.end() == findIter) {  
+		BaseCounterPtr newCounter = this->_baseCounterCreator();  
+		newCounter->FeedElement(element);  
+		this->_mapper[\*iterClassify] = newCounter;  
+	    }  
+	    else {  
+		findIter->second->FeedElement(element);  
+	    }  
+	}  
+    }  
   
 从代码可以看出_baseCounterCreator总是一个没有函数的对象生成器，但不可能在现实环境里面总是写出没有构造参数的组件，是吧？函数式编程的力量就在于参数的绑定，因此在实际应用的时候，这里的_baseCounterCreator几乎都是已经经过参数绑定的函数对象。  
 
