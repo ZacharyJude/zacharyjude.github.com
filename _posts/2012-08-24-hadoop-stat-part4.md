@@ -37,11 +37,12 @@ BasicCounter`<`TElement`>`是一个用于计数的组件，他目前支持这几
 3.  出现次数计数
   
 BasicCounter的主要接口就是一个FeedElement函数，下面是他的实现，这个接口就是用于统计给定元素：  
+
     BasicCounter的FeedElement代码  
     void FeedElement(const TElement& elem) {  
-	  
-	this->_feedElementTimes++;
-	  
+	   
+	this->_feedElementTimes++;  
+	   
 	if(this->_isEnableUniqCount) {  
 	    this->_uniqOccur.insert(elem);  
 	}  
@@ -80,11 +81,11 @@ ClassifyCounter`<`TElement, TBaseCounter`>`是用于分类统计的基础组件�
 	for(TSetS::const_iterator iterClassify=this->_bufferForHoldClassify.begin();  
 	    iterClassify!=this->_bufferForHoldClassify.end();  
 	    ++iterClassify) {  
-	    TClassifyMapperIter findIter = this->_mapper.find(\*iterClassify);  
+	    TClassifyMapperIter findIter = this->_mapper.find(*iterClassify);  
 	    if(this->_mapper.end() == findIter) {  
 		BaseCounterPtr newCounter = this->_baseCounterCreator();  
 		newCounter->FeedElement(element);  
-		this->_mapper[\*iterClassify] = newCounter;  
+		this->_mapper[*iterClassify] = newCounter;  
 	    }  
 	    else {  
 		findIter->second->FeedElement(element);  
