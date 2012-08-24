@@ -38,7 +38,7 @@ BasicCounter`<`TElement`>`是一个用于计数的组件，他目前支持这几
   
 BasicCounter的主要接口就是一个FeedElement函数，下面是他的实现，这个接口就是用于统计给定元素：  
   
-    void FeedElement(const TElement& elem) {
+    void FeedElement(const TElement& elem) {  
 	
 	this->_feedElementTimes++;  
 	
@@ -63,4 +63,6 @@ BasicCounter的主要接口就是一个FeedElement函数，下面是他的实现
 	return;
     }
   
-通过模板，BasicCounter可以用于计数不同的类型，因为内部使用STL来维护这些要计数的类型，因此模板类型也必须要能够用于STL中。
+通过模板，BasicCounter可以用于计数不同的类型，因为内部使用STL来维护这些要计数的类型，因此模板类型也必须要能够用于STL中。在构造BasicCounter的时候需要指定要计算那些类型的计数，默认是全部都会计算，但一般是不需要的。  
+ClassifyCounter`<`TElement, TBaseCounter`>`是用于分类统计的基础组件。为什么需要这个组件？这个可以回溯到第二篇文章里面提到的维度分类，因为有了维度分类统计的概念，自然就需要在代码层面有一个可以高度复用的概念。两个模板参数分别是输入的元素类型，和子counter的类型。对ClassifyCounter的简单描述就是：**对输入元素进行分类，并用所属分类下的TBaseCounter对TElement的某些数据进行统计**。不过这样的描述还是太抽象了，所以还是上示意图：  
+
