@@ -39,7 +39,7 @@ BasicCounter`<`TElement`>`是一个用于计数的组件，他目前支持这几
 BasicCounter的主要接口就是一个FeedElement函数，下面是他的实现，这个接口就是用于统计给定元素：  
   
     void FeedElement(const TElement& elem) {
-    
+	
 	this->_feedElementTimes++;  
 	
 	if(this->_isEnableUniqCount) {
@@ -62,4 +62,5 @@ BasicCounter的主要接口就是一个FeedElement函数，下面是他的实现
 	}
 	return;
     }
-
+  
+通过模板，BasicCounter可以用于计数不同的类型，因为内部使用STL来维护这些要计数的类型，因此模板类型也必须要能够用于STL中。
