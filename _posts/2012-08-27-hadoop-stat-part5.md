@@ -7,7 +7,7 @@ published: true
 
 ## 统计类型生成规则  
 
-上一篇文章里面提到一个组件——StatTypeTraits<PhpApiLogRecordPtr>::GetStatTypes(logRecord)。在玩模板编程的时候我认为所有函数都可以称为一个组件，当然其实这只是个人对系统的理解，并非一定要如此接受。这个组件很重要，他决定一条日志记录到底要参与那些统计项的统计，而本篇就是要说说这东西的设计思路。  
+上一篇文章里面提到一个组件——StatTypeTraits`<`PhpApiLogRecordPtr`>`::GetStatTypes(logRecord)。在玩模板编程的时候我认为所有函数都可以称为一个组件，当然其实这只是个人对系统的理解，并非一定要如此接受。这个组件很重要，他决定一条日志记录到底要参与那些统计项的统计，而本篇就是要说说这东西的设计思路。  
 
 在刚开始的时候每个统计项几乎都是又一个请求的method来决定。所谓method就是url上的拼接而已，例如twitter/popular、twitter/latest等等。事实上大部分的统计类型都可以通过method来唯一判断，但MMStat面对现实环境中更复杂的问题。追溯到以前，第一个例子就是单个宝贝浏览页的PV和设备统计，对于单个宝贝的浏览在过去一直没有发送专门用于统计的请求，但就有一个twitter/reply_feed的请求会发上来，这个请求的用处是获取该宝贝的评论列表，而且属于ajax请求，一次不会请求所有数据，因此当url参数offset=0的时候，就表示第一次请求。基于这样的背景，也就是单个宝贝浏览页面中可能会请求多次twitter/reply_feed（伴随不同的offset参数），而统计程序应该总根据offset=0来判断。  
 
